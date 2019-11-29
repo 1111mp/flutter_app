@@ -1,4 +1,4 @@
-package com.example.myapp
+package com.example.fluroapp
 
 import android.os.Bundle
 

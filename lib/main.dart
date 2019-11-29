@@ -1,40 +1,28 @@
+import 'package:fluro/fluro.dart';
+import 'package:fluroapp/router/application.dart';
+import 'package:fluroapp/router/routes.dart';
+// import 'package:fluroapp/utils/fluro/src/router.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/provider/index.dart';
-import 'package:provider/provider.dart';
-
-import 'utils/index.dart' show white;
-
-import 'routes.dart';
 
 void main() {
-  print('start');
-  // final counter = CounterModel();
-  final textSize = 48;
+  // 注册fluro routes
+  Router router = Router();
+  Routes.configureRoutes(router);
+  Application.router = router;
 
-  runApp(MultiProvider(
-    providers: [
-      Provider(
-        builder: (context) => textSize,
-        dispose: (context, value) => value.dispose(),
-      ), //Provider 只能提供恒定的数据，不能通知依赖它的子部件刷新
-      ChangeNotifierProvider(
-        builder: (context) => CounterModel(),
-      ),
-    ],
-    child: MyApp(),
-  ));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-        title: 'Flutter Demo',
-        // debugShowCheckedModeBanner: false, //去掉右上角debug的标签
-        theme: ThemeData(
-          primarySwatch: white,
-        ),
-        initialRoute: '/',
-        routes: AppRoutes.getRoutes());
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      // 生成路由
+      onGenerateRoute: Application.router.generator,
+    );
   }
 }
