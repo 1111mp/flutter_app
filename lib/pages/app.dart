@@ -1,54 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/router/route_handlers.dart';
 
-import '../routes.dart';
-
-class App extends StatefulWidget {
+class AppPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return new _AppState();
-  }
+  _AppPageState createState() => _AppPageState();
 }
 
-class _AppState extends State<App> {
+class _AppPageState extends State<AppPage> {
+  PageController _pageController;
   int _tabIndex = 0;
-  final List<Widget> _pageList = AppRoutes.getPageList();
-
-  // final TextStyle _textStyle =
-  //     new TextStyle(fontSize: 14.0, color: const Color(0xff515151));
+  final List<Widget> _pageList = getPageList();
 
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        // appBar: new AppBar(
-        //   title: new Text('Home'),
-        //   centerTitle: true,
-        // ),
-        body: IndexedStack(
-          // Flutter - BottomNavigationBar底部导航栏切换后，防止状态丢失
-          index: _tabIndex,
-          children: _pageList,
-        ),
-        bottomNavigationBar: new BottomNavigationBar(
-            items: <BottomNavigationBarItem>[
-              new BottomNavigationBarItem(
-                  icon: new Icon(Icons.home), title: new Text('Home')),
-              new BottomNavigationBarItem(
-                  icon: new Icon(Icons.more), title: new Text('More')),
-              new BottomNavigationBarItem(
-                  icon: new Icon(Icons.find_in_page), title: new Text('Find')),
-              new BottomNavigationBarItem(
-                  icon: new Icon(Icons.person), title: new Text('My')),
-            ],
-            type: BottomNavigationBarType.fixed,
-            currentIndex: _tabIndex,
-            iconSize: 24.0,
-            onTap: (index) {
-              setState(() {
-                _tabIndex = index;
-              });
-            },
-            selectedFontSize: 14.0,
-            unselectedFontSize: 14.0,
-            selectedItemColor: Colors.blue));
+  void initState() {
+    super.initState();
+    _pageController = PageController(
+      initialPage: this._tabIndex,
+      keepPage: true,
+    );
+  }
+
+  /// IndexedStack在初始化的时候会初始化所有的子元素，pageA和pageB的initState会同时调用
+  /// https://blog.bombox.org/2019-02-23/flutter-tab-keep-alive/
+  /// 使用PageView可以正常切换，但是每次切换Tab的时候还是会重复调用initState，我们还需要在子页面实现AutomaticKeepAliveClientMixin
+  /// 通过设置physics为NeverScrollableScrollPhysics()来禁止左右滑动切换
+  @override
+  Widget build(BuildContext content) {
+    return Scaffold(
+      body: PageView(
+        controller: _pageController,
+        children: _pageList,
+        physics: NeverScrollableScrollPhysics(),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            title: Text('Home'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.more),
+            title: Text('More'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.find_in_page),
+            title: Text('Find'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            title: Text('My'),
+          ),
+        ],
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _tabIndex,
+        iconSize: 24.0,
+        onTap: (index) {
+          setState(() {
+            _tabIndex = index;
+            _pageController.jumpToPage(index);
+          });
+        },
+        selectedFontSize: 14.0,
+        unselectedFontSize: 14.0,
+        selectedItemColor: Colors.blue,
+      ),
+    );
   }
 }

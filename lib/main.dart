@@ -1,25 +1,28 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/provider/index.dart';
+import 'package:flutter_app/common/utils/index.dart' show white;
+import 'package:flutter_app/router/application.dart';
+import 'package:flutter_app/router/routes.dart';
 import 'package:provider/provider.dart';
 
-import 'utils/index.dart' show white;
-
-import 'routes.dart';
+import 'common/provider/index.dart';
 
 void main() {
-  print('start');
-  // final counter = CounterModel();
   final textSize = 48;
+  // 注册fluro routes
+  Router router = Router();
+  Routes.configureRoutes(router);
+  Application.router = router;
 
   runApp(MultiProvider(
     providers: [
       Provider(
-        builder: (context) => textSize,
+        create: (context) => textSize,
         dispose: (context, value) => value.dispose(),
-      ), //Provider 只能提供恒定的数据，不能通知依赖它的子部件刷新
-      ChangeNotifierProvider(
-        builder: (context) => CounterModel(),
       ),
+      ChangeNotifierProvider(
+        create: (context) => CounterModel(),
+      )
     ],
     child: MyApp(),
   ));
@@ -28,13 +31,22 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-        title: 'Flutter Demo',
-        // debugShowCheckedModeBanner: false, //去掉右上角debug的标签
-        theme: ThemeData(
-          primarySwatch: white,
-        ),
-        initialRoute: '/',
-        routes: AppRoutes.getRoutes());
+    return MaterialApp(
+      title: 'Flutter Demo',
+      //去掉右上角debug的标签
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: white,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        // highlightColor: Colors.transparent,
+        // splashColor: Colors.transparent,
+      ),
+      // 生成路由
+      onGenerateRoute: Application.router.generator,
+    );
   }
 }
