@@ -20,6 +20,8 @@ class _MorePageState extends State<MorePage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Scaffold(
         appBar: AppBar(
           title: Text('更多'),

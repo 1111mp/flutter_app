@@ -11,8 +11,9 @@ class VideoApp extends StatelessWidget {
       body: Center(
         child: VideoPlayerUI.network(
           url:
-              'https://gss3.baidu.com/6LZ0ej3k1Qd3ote6lo7D0j9wehsv/tieba-smallvideo-transcode-crf/60609889_0b5d29ee8e09fad4cc4f40f314d737ca_0.mp4',
+              'https://vfx.mtime.cn/Video/2019/02/04/mp4/190204084208765161.mp4',
           title: '示例视频',
+          key: UniqueKey(),
         ),
       ),
     );

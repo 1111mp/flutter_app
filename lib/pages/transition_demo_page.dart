@@ -24,7 +24,7 @@ class _TransitionDemoPageState extends State<TransitionDemoPage> {
             FluroConvertUtils.fluroCnParamsDecode(widget.title),
             textAlign: TextAlign.center,
           )),
-          RaisedButton(
+          ElevatedButton(
             child: Text('返回'),
             onPressed: () {
               NavigatorUtil.goBack(context);

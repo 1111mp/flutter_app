@@ -9,7 +9,8 @@ class FluroConvertUtils {
 
   /// fluro 传递后取出参数，解析
   static String fluroCnParamsDecode(String encodeCn) {
-    var list = List<int>();
+    // ignore: deprecated_member_use
+    var list = List<int>.filled(1, 0, growable: true);
 
     ///字符串解码
     jsonDecode(encodeCn).forEach(list.add);

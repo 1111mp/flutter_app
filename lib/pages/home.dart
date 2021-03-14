@@ -22,6 +22,8 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     String name = "来自第一个界面测试一下";
     int age = 14;
     double score = 6.4;
@@ -33,14 +35,14 @@ class _HomePageState extends State<HomePage>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Center(child: Text('这是主页')),
-          RaisedButton(
+          ElevatedButton(
             child: Text('传递参数string ,int，double，bool ，自定义类型'),
             onPressed: () {
               NavigatorUtil.goDemoParamsPage(
                   context, name, age, score, sex, person);
             },
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text('传递参数,接受返回值'),
             onPressed: () {
               NavigatorUtil.goReturnParamsPage(context).then((result) {
@@ -59,7 +61,7 @@ class _HomePageState extends State<HomePage>
               });
             },
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text('框架 自带 转场动画 演示'),
             onPressed: () {
               NavigatorUtil.gotransitionDemoPage(
@@ -72,7 +74,7 @@ class _HomePageState extends State<HomePage>
               );
             },
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text('框架 自定义 转场动画 演示'),
             onPressed: () {
               NavigatorUtil.gotransitionCustomDemoPage(
@@ -81,7 +83,7 @@ class _HomePageState extends State<HomePage>
               );
             },
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text('修改源码，添加使用 Flutter 的 cupertino 转场动画'),
             onPressed: () {
               NavigatorUtil.gotransitionCupertinoDemoPage(
@@ -91,25 +93,25 @@ class _HomePageState extends State<HomePage>
               );
             },
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text('Browser page'),
             onPressed: () {
               NavigatorUtil.goPage(context, '/browser');
             },
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text('video player'),
             onPressed: () {
               NavigatorUtil.goPage(context, '/video');
             },
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text('share'),
             onPressed: () {
               NavigatorUtil.goPage(context, '/share');
             },
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text('image picker'),
             onPressed: () {
               NavigatorUtil.goPage(context, '/image_picker');
@@ -138,7 +140,7 @@ class _HomePageState extends State<HomePage>
           actions: <Widget>[
             new Padding(
               padding: new EdgeInsets.only(bottom: 8.0, right: 8.0),
-              child: new FlatButton(
+              child: TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
@@ -147,7 +149,7 @@ class _HomePageState extends State<HomePage>
             ),
             new Padding(
               padding: new EdgeInsets.only(bottom: 8.0, right: 8.0),
-              child: new FlatButton(
+              child: new TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },

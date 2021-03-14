@@ -10,7 +10,7 @@ import 'common/provider/index.dart';
 void main() {
   final textSize = 48;
   // 注册fluro routes
-  Router router = Router();
+  FluroRouter router = FluroRouter();
   Routes.configureRoutes(router);
   Application.router = router;
 
@@ -18,7 +18,6 @@ void main() {
     providers: [
       Provider(
         create: (context) => textSize,
-        dispose: (context, value) => value.dispose(),
       ),
       ChangeNotifierProvider(
         create: (context) => CounterModel(),
@@ -46,7 +45,7 @@ class MyApp extends StatelessWidget {
         // splashColor: Colors.transparent,
       ),
       // 生成路由
-      onGenerateRoute: Application.router.generator,
+      onGenerateRoute: Application.router!.generator,
     );
   }
 }

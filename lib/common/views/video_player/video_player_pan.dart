@@ -12,7 +12,7 @@ import 'video_player_control.dart';
 class VideoPlayerPan extends StatefulWidget {
   VideoPlayerPan({
 //    this.controlKey,
-    this.child,
+    required this.child,
   });
 
 //  final GlobalKey<VideoPlayerControlState> controlKey;
@@ -24,10 +24,10 @@ class VideoPlayerPan extends StatefulWidget {
 
 class _VideoPlayerPanState extends State<VideoPlayerPan>
     with AfterLayoutMixin<VideoPlayerPan> {
-  Offset startPosition; // 起始位置
-  double movePan; // 偏移量累计总和
-  double layoutWidth; // 组件宽度
-  double layoutHeight; // 组件高度
+  late Offset startPosition; // 起始位置
+  late double movePan; // 偏移量累计总和
+  late double layoutWidth; // 组件宽度
+  late double layoutHeight; // 组件高度
   String volumePercentage = ''; // 组件位移描述
   double playDialogOpacity = 0.0;
   bool allowHorizontal = false; // 是否允许快进
@@ -36,9 +36,9 @@ class _VideoPlayerPanState extends State<VideoPlayerPan>
   bool brightnessOk = false; // 是否允许调节亮度
 
   VideoPlayerController get controller =>
-      ControllerWidget.of(context).controller;
-  bool get videoInit => ControllerWidget.of(context).videoInit;
-  String get title => ControllerWidget.of(context).title;
+      ControllerWidget.of(context)!.controller;
+  bool get videoInit => ControllerWidget.of(context)!.videoInit;
+  String get title => ControllerWidget.of(context)!.title;
 
   @override
   void afterFirstLayout(BuildContext context) {
@@ -82,7 +82,7 @@ class _VideoPlayerPanState extends State<VideoPlayerPan>
               ),
             ),
             VideoPlayerControl(
-              key: ControllerWidget.of(context).controlKey,
+              key: ControllerWidget.of(context)!.controlKey,
             )
           ],
         ),
@@ -174,8 +174,8 @@ class _VideoPlayerPanState extends State<VideoPlayerPan>
   void _reset(BuildContext context) {
     startPosition = Offset(0, 0);
     movePan = 0;
-    layoutHeight = context.size.height;
-    layoutWidth = context.size.width;
+    layoutHeight = context.size!.height;
+    layoutWidth = context.size!.width;
     volumePercentage = '';
   }
 

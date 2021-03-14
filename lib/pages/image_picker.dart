@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -18,57 +19,77 @@ class ImagePickerPage extends StatelessWidget {
 }
 
 class MyImageage extends StatefulWidget {
-  MyImageage({Key key, this.title}) : super(key: key);
+  MyImageage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _MyImagePageState createState() => _MyImagePageState();
 }
 
 class _MyImagePageState extends State<MyImageage> {
-  File _imageFile;
+  PickedFile? _imageFile;
   dynamic _pickImageError;
   bool isVideo = false;
-  VideoPlayerController _controller;
-  String _retrieveDataError;
+  VideoPlayerController? _controller;
+  VideoPlayerController? _toBeDisposed;
+  String? _retrieveDataError;
 
+  final ImagePicker _picker = ImagePicker();
   final TextEditingController maxWidthController = TextEditingController();
   final TextEditingController maxHeightController = TextEditingController();
   final TextEditingController qualityController = TextEditingController();
 
-  Future<void> _playVideo(File file) async {
+  Future<void> _playVideo(PickedFile? file) async {
     if (file != null && mounted) {
       await _disposeVideoController();
-      _controller = VideoPlayerController.file(file);
-      await _controller.setVolume(1.0);
-      await _controller.initialize();
-      await _controller.setLooping(true);
-      await _controller.play();
+      late VideoPlayerController controller;
+      if (kIsWeb) {
+        controller = VideoPlayerController.network(file.path);
+      } else {
+        controller = VideoPlayerController.file(File(file.path));
+      }
+      _controller = controller;
+      // In web, most browsers won't honor a programmatic call to .play
+      // if the video has a sound track (and is not muted).
+      // Mute the video so it auto-plays in web!
+      // This is not needed if the call to .play is the result of user
+      // interaction (clicking on a "play" button, for example).
+      final double volume = kIsWeb ? 0.0 : 1.0;
+      await controller.setVolume(volume);
+      await controller.initialize();
+      await controller.setLooping(true);
+      await controller.play();
       setState(() {});
     }
   }
 
-  void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
+  void _onImageButtonPressed(ImageSource source,
+      {BuildContext? context}) async {
     if (_controller != null) {
-      await _controller.setVolume(0.0);
+      await _controller!.setVolume(0.0);
     }
     if (isVideo) {
-      final File file = await ImagePicker.pickVideo(
+      final PickedFile? file = await _picker.getVideo(
           source: source, maxDuration: const Duration(seconds: 10));
       await _playVideo(file);
     } else {
-      await _displayPickImageDialog(context,
-          (double maxWidth, double maxHeight, int quality) async {
+      await _displayPickImageDialog(context!,
+          (double? maxWidth, double? maxHeight, int? quality) async {
         try {
-          _imageFile = await ImagePicker.pickImage(
-              source: source,
-              maxWidth: maxWidth,
-              maxHeight: maxHeight,
-              imageQuality: quality);
-          setState(() {});
+          final pickedFile = await _picker.getImage(
+            source: source,
+            maxWidth: maxWidth,
+            maxHeight: maxHeight,
+            imageQuality: quality,
+          );
+          setState(() {
+            _imageFile = pickedFile;
+          });
         } catch (e) {
-          _pickImageError = e;
+          setState(() {
+            _pickImageError = e;
+          });
         }
       });
     }
@@ -77,8 +98,8 @@ class _MyImagePageState extends State<MyImageage> {
   @override
   void deactivate() {
     if (_controller != null) {
-      _controller.setVolume(0.0);
-      _controller.pause();
+      _controller!.setVolume(0.0);
+      _controller!.pause();
     }
     super.deactivate();
   }
@@ -93,14 +114,15 @@ class _MyImagePageState extends State<MyImageage> {
   }
 
   Future<void> _disposeVideoController() async {
-    if (_controller != null) {
-      await _controller.dispose();
-      _controller = null;
+    if (_toBeDisposed != null) {
+      await _toBeDisposed!.dispose();
     }
+    _toBeDisposed = _controller;
+    _controller = null;
   }
 
   Widget _previewVideo() {
-    final Text retrieveError = _getRetrieveErrorWidget();
+    final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -117,12 +139,20 @@ class _MyImagePageState extends State<MyImageage> {
   }
 
   Widget _previewImage() {
-    final Text retrieveError = _getRetrieveErrorWidget();
+    final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
     }
     if (_imageFile != null) {
-      return Image.file(_imageFile);
+      if (kIsWeb) {
+        // Why network?
+        // See https://pub.dev/packages/image_picker#getting-ready-for-the-web-platform
+        return Image.network(_imageFile!.path);
+      } else {
+        return Semantics(
+            child: Image.file(File(_imageFile!.path)),
+            label: 'image_picker_example_picked_image');
+      }
     } else if (_pickImageError != null) {
       return Text(
         'Pick image error: $_pickImageError',
@@ -137,7 +167,7 @@ class _MyImagePageState extends State<MyImageage> {
   }
 
   Future<void> retrieveLostData() async {
-    final LostDataResponse response = await ImagePicker.retrieveLostData();
+    final LostData response = await _picker.getLostData();
     if (response.isEmpty) {
       return;
     }
@@ -152,7 +182,7 @@ class _MyImagePageState extends State<MyImageage> {
         });
       }
     } else {
-      _retrieveDataError = response.exception.code;
+      _retrieveDataError = response.exception!.code;
     }
   }
 
@@ -160,10 +190,10 @@ class _MyImagePageState extends State<MyImageage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title!),
       ),
       body: Center(
-        child: Platform.isAndroid
+        child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
             ? FutureBuilder<void>(
                 future: retrieveLostData(),
                 builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
@@ -196,14 +226,17 @@ class _MyImagePageState extends State<MyImageage> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          FloatingActionButton(
-            onPressed: () {
-              isVideo = false;
-              _onImageButtonPressed(ImageSource.gallery, context: context);
-            },
-            heroTag: 'image0',
-            tooltip: 'Pick Image from gallery',
-            child: const Icon(Icons.photo_library),
+          Semantics(
+            label: 'image_picker_example_from_gallery',
+            child: FloatingActionButton(
+              onPressed: () {
+                isVideo = false;
+                _onImageButtonPressed(ImageSource.gallery, context: context);
+              },
+              heroTag: 'image0',
+              tooltip: 'Pick Image from gallery',
+              child: const Icon(Icons.photo_library),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 16.0),
@@ -248,9 +281,9 @@ class _MyImagePageState extends State<MyImageage> {
     );
   }
 
-  Text _getRetrieveErrorWidget() {
+  Text? _getRetrieveErrorWidget() {
     if (_retrieveDataError != null) {
-      final Text result = Text(_retrieveDataError);
+      final Text result = Text(_retrieveDataError!);
       _retrieveDataError = null;
       return result;
     }
@@ -287,22 +320,22 @@ class _MyImagePageState extends State<MyImageage> {
               ],
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: const Text('CANCEL'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              TextButton(
                   child: const Text('PICK'),
                   onPressed: () {
-                    double width = maxWidthController.text.isNotEmpty
+                    double? width = maxWidthController.text.isNotEmpty
                         ? double.parse(maxWidthController.text)
                         : null;
-                    double height = maxHeightController.text.isNotEmpty
+                    double? height = maxHeightController.text.isNotEmpty
                         ? double.parse(maxHeightController.text)
                         : null;
-                    int quality = qualityController.text.isNotEmpty
+                    int? quality = qualityController.text.isNotEmpty
                         ? int.parse(qualityController.text)
                         : null;
                     onPick(width, height, quality);
@@ -315,27 +348,27 @@ class _MyImagePageState extends State<MyImageage> {
 }
 
 typedef void OnPickImageCallback(
-    double maxWidth, double maxHeight, int quality);
+    double? maxWidth, double? maxHeight, int? quality);
 
 class AspectRatioVideo extends StatefulWidget {
   AspectRatioVideo(this.controller);
 
-  final VideoPlayerController controller;
+  final VideoPlayerController? controller;
 
   @override
   AspectRatioVideoState createState() => AspectRatioVideoState();
 }
 
 class AspectRatioVideoState extends State<AspectRatioVideo> {
-  VideoPlayerController get controller => widget.controller;
+  VideoPlayerController? get controller => widget.controller;
   bool initialized = false;
 
   void _onVideoControllerUpdate() {
     if (!mounted) {
       return;
     }
-    if (initialized != controller.value.initialized) {
-      initialized = controller.value.initialized;
+    if (initialized != controller!.value.isInitialized) {
+      initialized = controller!.value.isInitialized;
       setState(() {});
     }
   }
@@ -343,12 +376,12 @@ class AspectRatioVideoState extends State<AspectRatioVideo> {
   @override
   void initState() {
     super.initState();
-    controller.addListener(_onVideoControllerUpdate);
+    controller!.addListener(_onVideoControllerUpdate);
   }
 
   @override
   void dispose() {
-    controller.removeListener(_onVideoControllerUpdate);
+    controller!.removeListener(_onVideoControllerUpdate);
     super.dispose();
   }
 
@@ -357,8 +390,8 @@ class AspectRatioVideoState extends State<AspectRatioVideo> {
     if (initialized) {
       return Center(
         child: AspectRatio(
-          aspectRatio: controller.value?.aspectRatio,
-          child: VideoPlayer(controller),
+          aspectRatio: controller!.value.aspectRatio,
+          child: VideoPlayer(controller!),
         ),
       );
     } else {

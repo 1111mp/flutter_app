@@ -4,11 +4,11 @@ import 'package:flutter_app/model/Person.dart';
 import 'package:flutter_app/router/NavigatorUtil.dart';
 
 class DemoParamsPage extends StatefulWidget {
-  final String name;
-  final int age;
-  final double score;
-  final bool sex;
-  final String personJson;
+  final String? name;
+  final int? age;
+  final double? score;
+  final bool? sex;
+  final String? personJson;
 
   DemoParamsPage({this.name, this.age, this.score, this.sex, this.personJson});
 
@@ -20,17 +20,18 @@ class _DemoParamsPageState extends State<DemoParamsPage> {
   @override
   Widget build(BuildContext context) {
     /// 对 中文 进行解码
-    String mName = FluroConvertUtils.fluroCnParamsDecode(widget.name);
+    String mName = FluroConvertUtils.fluroCnParamsDecode(widget.name!);
 
     /// 对自定义类 进行解析
     Person person =
-        Person.fromJson(FluroConvertUtils.string2map(widget.personJson));
+        Person.fromJson(FluroConvertUtils.string2map(widget.personJson!));
     print(person.name);
     print(person.age);
     print(person.sex);
 
     /// 下面的写法也可以
-    Map<String, dynamic> data = FluroConvertUtils.string2map(widget.personJson);
+    Map<String, dynamic> data =
+        FluroConvertUtils.string2map(widget.personJson!);
     print(data["name"]);
     print(data["age"]);
     print(data["sex"]);
@@ -45,7 +46,7 @@ class _DemoParamsPageState extends State<DemoParamsPage> {
             Text('score：${widget.score}'),
             Text('sex：${widget.sex}'),
             Text('Person:${person.toJson().toString()}'),
-            RaisedButton(
+            ElevatedButton(
               child: Text('返回'),
               onPressed: () {
                 NavigatorUtil.goBack(context);

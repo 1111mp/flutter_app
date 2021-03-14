@@ -8,9 +8,9 @@ import 'controller_widget.dart';
 
 class VideoPlayerSlider extends StatefulWidget {
   final Function startPlayControlTimer;
-  final Timer timer;
+  final Timer? timer;
 
-  VideoPlayerSlider({this.startPlayControlTimer, this.timer});
+  VideoPlayerSlider({required this.startPlayControlTimer, required this.timer});
 
   @override
   _VideoPlayerSliderState createState() => _VideoPlayerSliderState();
@@ -18,11 +18,11 @@ class VideoPlayerSlider extends StatefulWidget {
 
 class _VideoPlayerSliderState extends State<VideoPlayerSlider> {
   VideoPlayerController get controller =>
-      ControllerWidget.of(context).controller;
+      ControllerWidget.of(context)!.controller;
 
-  bool get videoInit => ControllerWidget.of(context).videoInit;
+  bool get videoInit => ControllerWidget.of(context)!.videoInit;
   // double progressValue; //进度
-  String labelProgress; //tip内容
+  late String labelProgress; //tip内容
   bool handle = false; //判断是否在滑动的标识
   bool _controllerWasPlaying = false;
 
@@ -116,7 +116,7 @@ class _VideoPlayerSliderState extends State<VideoPlayerSlider> {
     }
 
     if (widget.timer != null) {
-      widget.timer.cancel();
+      widget.timer!.cancel();
     }
 
     _controllerWasPlaying = controller.value.isPlaying;
@@ -130,7 +130,7 @@ class _VideoPlayerSliderState extends State<VideoPlayerSlider> {
       return;
     }
     if (widget.timer != null) {
-      widget.timer.cancel();
+      widget.timer!.cancel();
     }
 
     final double relative = value / 100;

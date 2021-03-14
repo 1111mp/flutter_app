@@ -10,15 +10,15 @@ class FindPage extends StatefulWidget {
 }
 
 class _FindPageState extends State<FindPage> with TickerProviderStateMixin {
-  double extraPicHeight;
-  double extraBtmHeight;
-  ScrollPhysics _physics;
-  double prevDy;
+  late double extraPicHeight;
+  late double extraBtmHeight;
+  late ScrollPhysics _physics;
+  late double prevDy;
 
-  bool callNow;
+  late bool callNow;
 
-  AnimationController animationController;
-  Animation<double> animate;
+  late AnimationController animationController;
+  late Animation<double> animate;
 
   ScrollController _scrollController = new ScrollController();
 
@@ -164,11 +164,11 @@ class SliverCustomHeaderDelegate extends SliverPersistentHeaderDelegate {
   String statusBarMode = 'dark';
 
   SliverCustomHeaderDelegate({
-    this.collapsedHeight,
-    this.expandedHeight,
-    this.paddingTop,
-    this.coverImgUrl,
-    this.title,
+    required this.collapsedHeight,
+    required this.expandedHeight,
+    required this.paddingTop,
+    required this.coverImgUrl,
+    required this.title,
   });
 
   @override

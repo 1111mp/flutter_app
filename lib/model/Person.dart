@@ -1,9 +1,9 @@
 class Person {
-  String name;
-  int age;
-  bool sex;
+  late String name;
+  late int age;
+  late bool sex;
 
-  Person({this.name, this.age, this.sex});
+  Person({required this.name, required this.age, required this.sex});
 
   Person.fromJson(Map<String, dynamic> json) {
     name = json['name'];

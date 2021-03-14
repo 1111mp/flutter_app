@@ -11,7 +11,7 @@ class SplashPag extends StatefulWidget {
 }
 
 class _SplashPagState extends State<SplashPag> {
-  Timer _timer;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _SplashPagState extends State<SplashPag> {
   @override
   void dispose() {
     if (_timer != null) {
-      _timer.cancel();
+      _timer!.cancel();
       _timer = null;
     }
     super.dispose();

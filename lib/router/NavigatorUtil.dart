@@ -9,7 +9,7 @@ class NavigatorUtil {
   /// 返回
   static void goBack(BuildContext context) {
     /// 其实这边调用的是 Navigator.pop(context);
-    Application.router.pop(context);
+    Application.router!.pop(context);
   }
 
   /// 带参数的返回
@@ -19,7 +19,7 @@ class NavigatorUtil {
 
   /// 跳转至指定的页面
   static void goPage(BuildContext context, String route) {
-    Application.router.navigateTo(
+    Application.router!.navigateTo(
       context,
       route,
       transition: TransitionType.cupertino,
@@ -27,7 +27,7 @@ class NavigatorUtil {
   }
 
   static void goAppPage(BuildContext context) {
-    Application.router.navigateTo(
+    Application.router!.navigateTo(
       context,
       Routes.app,
       replace: true,
@@ -43,7 +43,7 @@ class NavigatorUtil {
 
     /// 对自定义类型 转为 json string
     String personJson = FluroConvertUtils.object2string(person);
-    Application.router.navigateTo(
+    Application.router!.navigateTo(
       context,
       Routes.demoParams +
           "?name=$mName&age=$age&score=$score&sex=$sex&personjson=$personJson",
@@ -52,13 +52,13 @@ class NavigatorUtil {
 
   /// 跳转到 会返回参数的 页面
   static Future goReturnParamsPage(BuildContext context) {
-    return Application.router.navigateTo(context, Routes.returnParams);
+    return Application.router!.navigateTo(context, Routes.returnParams);
   }
 
   /// 跳转到 转场动画 页面 ， 这边只展示 inFromLeft ，剩下的自己去尝试下，
   /// 框架自带的有 native，nativeModal，inFromLeft，inFromRight，inFromBottom，fadeIn，custom
   static Future gotransitionDemoPage(BuildContext context, String title) {
-    return Application.router.navigateTo(
+    return Application.router!.navigateTo(
       context, Routes.transitionDemo + "?title=$title",
 
       /// 指定了 转场动画 inFromLeft
@@ -82,7 +82,7 @@ class NavigatorUtil {
         ),
       );
     };
-    return Application.router.navigateTo(
+    return Application.router!.navigateTo(
       context, Routes.transitionCustomDemo + "?title=$title",
       transition: TransitionType.custom,
 
@@ -103,7 +103,7 @@ class NavigatorUtil {
     BuildContext context,
     String title,
   ) {
-    return Application.router.navigateTo(
+    return Application.router!.navigateTo(
       context,
       Routes.transitionCupertinoDemo + "?title=$title",
       transition: TransitionType.cupertino,

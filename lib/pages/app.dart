@@ -7,7 +7,7 @@ class AppPage extends StatefulWidget {
 }
 
 class _AppPageState extends State<AppPage> {
-  PageController _pageController;
+  late PageController _pageController;
   int _tabIndex = 0;
   final List<Widget> _pageList = getPageList();
 
@@ -36,19 +36,19 @@ class _AppPageState extends State<AppPage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text('Home'),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.more),
-            title: Text('More'),
+            label: 'More',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.find_in_page),
-            title: Text('Find'),
+            label: 'Find',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            title: Text('My'),
+            label: 'My',
           ),
         ],
         type: BottomNavigationBarType.fixed,

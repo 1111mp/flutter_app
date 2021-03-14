@@ -8,9 +8,9 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  Animation<double> animation;
-  AnimationController animationController;
-  Animation curve;
+  late Animation<double> animation;
+  late AnimationController animationController;
+  late Animation curve;
 
   @override
   bool get wantKeepAlive => true;
@@ -26,11 +26,13 @@ class _MyPageState extends State<MyPage>
       duration: Duration(milliseconds: 1000),
       vsync: this,
     );
+
     /// Curves动画列表 https://api.flutter.dev/flutter/animation/Curves-class.html
-    curve = CurvedAnimation(
+    Animation<double> curve = CurvedAnimation(
       parent: animationController,
       curve: Curves.linear,
     );
+
     animation = Tween<double>(
       begin: 100.0,
       end: 100.0 * 2.0,
@@ -48,6 +50,8 @@ class _MyPageState extends State<MyPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('My'),

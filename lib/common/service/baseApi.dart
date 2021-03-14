@@ -6,18 +6,18 @@ import 'package:cookie_jar/cookie_jar.dart';
 
 class DioInstance {
   // 实现dio的单例 此单例模式仅适用于单线程中
-  static DioInstance _instance;
+  static DioInstance? _instance;
 
   static DioInstance getInstance() {
     if (_instance == null) {
       _instance = new DioInstance();
     }
-    return _instance;
+    return _instance!;
   }
 
-  Dio dio;
-  Dio tokenDio;
-  String csrfToken;
+  late Dio dio;
+  late Dio tokenDio;
+  late String csrfToken;
 
   // 构造函数中做一些初始化配置
   DioInstance() {
@@ -120,8 +120,8 @@ class DioInstance {
   Future get(
     String url, {
     data,
-    Options options,
-    CancelToken cancelToken,
+    Options? options,
+    CancelToken? cancelToken,
   }) async {
     Response response;
     try {
@@ -155,9 +155,9 @@ class DioInstance {
   Future post(
     String url, {
     data,
-    Options options,
-    CancelToken cancelToken,
-    ProgressCallback onSendProgress,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
   }) async {
     Response response;
     try {
@@ -184,8 +184,8 @@ class DioInstance {
   Future downloadFile(
     String urlPath,
     String savePath, {
-    ProgressCallback onReceiveProgress,
-    CancelToken cancelToken,
+    ProgressCallback? onReceiveProgress,
+    CancelToken? cancelToken,
   }) async {
     Response response;
     try {
@@ -213,8 +213,8 @@ class DioInstance {
   Future uploadFile(
     String url, {
     data,
-    List<File> files,
-    ProgressCallback onSendProgress,
+    required List<File> files,
+    ProgressCallback? onSendProgress,
   }) async {
     Response response;
 

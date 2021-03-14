@@ -46,7 +46,7 @@ class _SharePageState extends State<SharePage> {
                 const Padding(padding: EdgeInsets.only(top: 24.0)),
                 Builder(
                   builder: (BuildContext context) {
-                    return RaisedButton(
+                    return ElevatedButton(
                       child: const Text('Share'),
                       onPressed: text.isEmpty
                           ? null
@@ -58,7 +58,8 @@ class _SharePageState extends State<SharePage> {
                               // RenderObject in its descendent tree when it's not
                               // a RenderObjectWidget. The RaisedButton's RenderObject
                               // has its position and size after it's built.
-                              final RenderBox box = context.findRenderObject();
+                              final RenderBox box =
+                                  context.findRenderObject() as RenderBox;
                               Share.share(
                                 text,
                                 subject: subject,

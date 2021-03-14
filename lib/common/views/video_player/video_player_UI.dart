@@ -11,8 +11,8 @@ enum VideoPlayerType { network, asset, file }
 
 class VideoPlayerUI extends StatefulWidget {
   VideoPlayerUI.network({
-    Key key,
-    @required String url, // 当前需要播放的地址
+    required Key key,
+    required String url, // 当前需要播放的地址
     this.width: double.infinity, // 播放器尺寸（大于等于视频播放区域）
     this.height: double.infinity,
     this.title = '', // 视频需要显示的标题
@@ -21,8 +21,8 @@ class VideoPlayerUI extends StatefulWidget {
         super(key: key);
 
   VideoPlayerUI.asset({
-    Key key,
-    @required String dataSource, // 当前需要播放的地址
+    required Key key,
+    required String dataSource, // 当前需要播放的地址
     this.width: double.infinity, // 播放器尺寸（大于等于视频播放区域）
     this.height: double.infinity,
     this.title = '', // 视频需要显示的标题
@@ -31,8 +31,8 @@ class VideoPlayerUI extends StatefulWidget {
         super(key: key);
 
   VideoPlayerUI.file({
-    Key key,
-    @required File file, // 当前需要播放的地址
+    required Key key,
+    required File file, // 当前需要播放的地址
     this.width: double.infinity, // 播放器尺寸（大于等于视频播放区域）
     this.height: double.infinity,
     this.title = '', // 视频需要显示的标题
@@ -58,7 +58,7 @@ class _VideoPlayerUIState extends State<VideoPlayerUI> {
   bool _videoInit = false;
   bool _videoError = false;
 
-  VideoPlayerController _controller; // video控件管理器
+  VideoPlayerController? _controller; // video控件管理器
 
   /// 记录是否全屏
   bool get _isFullScreen =>
@@ -85,8 +85,8 @@ class _VideoPlayerUIState extends State<VideoPlayerUI> {
   void dispose() async {
     super.dispose();
     if (_controller != null) {
-      _controller.removeListener(_videoListener);
-      _controller.dispose();
+      _controller!.removeListener(_videoListener);
+      _controller!.dispose();
     }
     Screen.keepOn(false);
   }
@@ -111,7 +111,7 @@ class _VideoPlayerUIState extends State<VideoPlayerUI> {
     if (widget.url != null) {
       return ControllerWidget(
         controlKey: _key,
-        controller: _controller,
+        controller: _controller!,
         videoInit: _videoInit,
         title: widget.title,
         child: VideoPlayerPan(
@@ -138,8 +138,8 @@ class _VideoPlayerUIState extends State<VideoPlayerUI> {
   Widget _isVideoInit() {
     if (_videoInit) {
       return AspectRatio(
-        aspectRatio: _controller.value.aspectRatio,
-        child: VideoPlayer(_controller),
+        aspectRatio: _controller!.value.aspectRatio,
+        child: VideoPlayer(_controller!),
       );
     } else if (_controller != null && _videoError) {
       return Text(
@@ -161,8 +161,8 @@ class _VideoPlayerUIState extends State<VideoPlayerUI> {
     if (widget.url == null || widget.url == '') return;
     if (_controller != null) {
       /// 如果控制器存在，清理掉重新创建
-      _controller.removeListener(_videoListener);
-      _controller.dispose();
+      _controller!.removeListener(_videoListener);
+      _controller!.dispose();
     }
     setState(() {
       /// 重置组件参数
@@ -178,31 +178,31 @@ class _VideoPlayerUIState extends State<VideoPlayerUI> {
     }
 
     /// 加载资源完成时，监听播放进度，并且标记_videoInit=true加载完成
-    _controller.addListener(_videoListener);
-    await _controller.initialize();
+    _controller!.addListener(_videoListener);
+    await _controller!.initialize();
     setState(() {
       _videoInit = true;
       _videoError = false;
-      _controller.play();
+      _controller!.play();
     });
   }
 
   void _videoListener() async {
-    if (_controller.value.hasError) {
+    if (_controller!.value.hasError) {
       setState(() {
         _videoError = true;
       });
     } else {
-      Duration res = await _controller.position;
-      if (res >= _controller.value.duration) {
-        await _controller.seekTo(Duration(seconds: 0));
-        await _controller.pause();
+      Duration? res = await _controller!.position;
+      if (res! >= _controller!.value.duration) {
+        await _controller!.seekTo(Duration(seconds: 0));
+        await _controller!.pause();
       }
-      if (_controller.value.isPlaying && _key.currentState != null) {
+      if (_controller!.value.isPlaying && _key.currentState != null) {
         /// 减少build次数
-        _key.currentState.setPosition(
+        _key.currentState!.setPosition(
           position: res,
-          totalDuration: _controller.value.duration,
+          totalDuration: _controller!.value.duration,
         );
       }
     }
