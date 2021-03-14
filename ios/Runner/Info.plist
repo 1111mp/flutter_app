@@ -47,6 +47,6 @@
 			<true/>
 		</dict>
 		<key>UIStatusBarHidden</key>
-		<false/>
+		<true/>
 	</dict>
 </plist>
