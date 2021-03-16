@@ -18,8 +18,8 @@ class NavigatorUtil {
   }
 
   /// 跳转至指定的页面
-  static void goPage(BuildContext context, String route) {
-    Application.router!.navigateTo(
+  static Future goPage(BuildContext context, String route) {
+    return Application.router!.navigateTo(
       context,
       route,
       transition: TransitionType.cupertino,

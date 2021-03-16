@@ -183,7 +183,10 @@ class _VideoPlayerUIState extends State<VideoPlayerUI> {
     setState(() {
       _videoInit = true;
       _videoError = false;
-      _controller!.play();
+      var widgetsBinding = WidgetsBinding.instance;
+      widgetsBinding!.addPostFrameCallback((callback) {
+        _controller!.play();
+      });
     });
   }
 

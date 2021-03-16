@@ -218,7 +218,6 @@ class VideoPlayerControlState extends State<VideoPlayerControl> {
   }
 
   void backPress() {
-    print(_isFullScreen);
     // 如果是全屏，点击返回键则关闭全屏，如果不是，则系统返回键
     if (_isFullScreen) {
       _toggleFullScreen();

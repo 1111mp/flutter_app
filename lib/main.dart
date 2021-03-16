@@ -35,7 +35,8 @@ class MyApp extends StatelessWidget {
       //去掉右上角debug的标签
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: white,
+        // primaryColor: white,
+        brightness: Brightness.light,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
       ),

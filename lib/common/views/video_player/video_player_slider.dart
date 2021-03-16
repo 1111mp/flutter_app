@@ -62,6 +62,8 @@ class _VideoPlayerSliderState extends State<VideoPlayerSlider> {
       data: SliderTheme.of(context).copyWith(
         //进度条滑块左边颜色
         inactiveTrackColor: Colors.white,
+        activeTickMarkColor: Colors.transparent,
+        inactiveTickMarkColor: Colors.transparent,
         overlayShape: RoundSliderOverlayShape(
           //可继承SliderComponentShape自定义形状
           overlayRadius: 10, //滑块外圈大小

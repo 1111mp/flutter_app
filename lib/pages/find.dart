@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class FindPage extends StatefulWidget {
   @override
@@ -69,84 +68,77 @@ class _FindPageState extends State<FindPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        // systemNavigationBarColor: Colors.white,
-      ),
-      child: Scaffold(
-        body: Listener(
-          onPointerMove: (event) {
-            var position = event.position.dy;
-            var detal = position - prevDy;
+    return Scaffold(
+      body: Listener(
+        onPointerMove: (event) {
+          var position = event.position.dy;
+          var detal = position - prevDy;
 
-            if (detal > 0) {
-              // print("================向下移动================");
-              debounce(() {
-                setState(() {
-                  _physics = ClampingScrollPhysics();
-                });
-              });
-              var result = _scrollController.offset;
-              if (result <= 0) {
-                updatePicHeight(detal);
-              }
-            } else {
-              // print("================向上移动================");
-            }
-          },
-          onPointerUp: (_) {
-            runAnimate();
-            animationController.forward(from: 0.0);
-
-            if (_scrollController.offset <= 0) {
-              callNow = true;
+          if (detal > 0) {
+            // print("================向下移动================");
+            debounce(() {
               setState(() {
-                _physics = BouncingScrollPhysics();
+                _physics = ClampingScrollPhysics();
               });
+            });
+            var result = _scrollController.offset;
+            if (result <= 0) {
+              updatePicHeight(detal);
             }
-          },
-          onPointerDown: (event) {
-            prevDy = event.position.dy;
+          } else {
+            // print("================向上移动================");
+          }
+        },
+        onPointerUp: (_) {
+          runAnimate();
+          animationController.forward(from: 0.0);
+
+          if (_scrollController.offset <= 0) {
             callNow = true;
             setState(() {
               _physics = BouncingScrollPhysics();
             });
-          },
-          child: PrimaryScrollController(
+          }
+        },
+        onPointerDown: (event) {
+          prevDy = event.position.dy;
+          callNow = true;
+          setState(() {
+            _physics = BouncingScrollPhysics();
+          });
+        },
+        child: PrimaryScrollController(
+          controller: _scrollController,
+          child: CupertinoScrollbar(
             controller: _scrollController,
-            child: CupertinoScrollbar(
-              controller: _scrollController,
-              child: CustomScrollView(
-                physics: _physics,
-                slivers: <Widget>[
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: SliverCustomHeaderDelegate(
-                        title: '账号',
-                        collapsedHeight: 40,
-                        expandedHeight: 300 + extraPicHeight,
-                        paddingTop: MediaQuery.of(context).padding.top,
-                        coverImgUrl:
-                            'https://p1.music.126.net/fqdzslent-Jx2MmhWAh0ow==/109951163009168472.jpg'),
+            child: CustomScrollView(
+              physics: _physics,
+              slivers: <Widget>[
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: SliverCustomHeaderDelegate(
+                      title: '账号',
+                      collapsedHeight: 40,
+                      expandedHeight: 300 + extraPicHeight,
+                      paddingTop: MediaQuery.of(context).padding.top,
+                      coverImgUrl:
+                          'https://p1.music.126.net/fqdzslent-Jx2MmhWAh0ow==/109951163009168472.jpg'),
+                ),
+                SliverFixedExtentList(
+                  itemExtent: 50.0,
+                  delegate: new SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      //创建列表项
+                      return new Container(
+                        alignment: Alignment.center,
+                        color: Colors.lightBlue[100 * (index % 9)],
+                        child: new Text('list item $index'),
+                      );
+                    },
+                    childCount: 20, //50个列表项
                   ),
-                  SliverFixedExtentList(
-                    itemExtent: 50.0,
-                    delegate: new SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        //创建列表项
-                        return new Container(
-                          alignment: Alignment.center,
-                          color: Colors.lightBlue[100 * (index % 9)],
-                          child: new Text('list item $index'),
-                        );
-                      },
-                      childCount: 20, //50个列表项
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -232,7 +224,7 @@ class SliverCustomHeaderDelegate extends SliverPersistentHeaderDelegate {
                     children: <Widget>[
                       IconButton(
                         icon: Icon(
-                          IconData(0xe660, fontFamily: 'iconfont'),
+                          CupertinoIcons.slider_horizontal_3,
                           color: Color(0xFF000001),
                         ),
                         onPressed: () {},
@@ -249,7 +241,7 @@ class SliverCustomHeaderDelegate extends SliverPersistentHeaderDelegate {
                       ),
                       IconButton(
                         icon: Icon(
-                          IconData(0xe619, fontFamily: 'iconfont'),
+                          CupertinoIcons.gear_alt,
                           color: Color(0xFF000001),
                         ),
                         onPressed: () {},
