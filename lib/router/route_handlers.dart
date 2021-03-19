@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_app/common/utils/fluro_convert_util.dart';
 import 'package:flutter_app/common/views/browser.dart';
 import 'package:flutter_app/common/views/video_player.dart';
+import 'package:flutter_app/common/views/webview.dart';
 import 'package:flutter_app/pages/app.dart';
 import 'package:flutter_app/pages/demo_params_pag.dart';
 import 'package:flutter_app/pages/find.dart';
@@ -32,6 +33,12 @@ Handler browserHandle = new Handler(
   // String url = params["url"]?.first;
   return WebViewExample();
 });
+
+Handler webviewHandle = Handler(
+  handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+    return WebViewPage();
+  },
+);
 
 Handler videoHandle = new Handler(
     handlerFunc: (BuildContext? context, Map<String, List<String>> params) {

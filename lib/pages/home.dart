@@ -106,6 +106,12 @@ class _HomePageState extends State<HomePage>
               },
             ),
             ElevatedButton(
+              child: Text('webview page'),
+              onPressed: () {
+                NavigatorUtil.goPage(context, '/webview');
+              },
+            ),
+            ElevatedButton(
               child: Text('video player'),
               onPressed: () {
                 NavigatorUtil.goPage(context, '/video');

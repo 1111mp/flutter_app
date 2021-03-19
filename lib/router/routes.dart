@@ -7,6 +7,7 @@ class Routes {
   static String root = "/";
   static String app = "/app";
   static String browser = "/browser";
+  static String webview = "/webview";
   static String video = "/video";
   static String share = "/share";
   static String imagePicker = "/image_picker";
@@ -27,6 +28,7 @@ class Routes {
     router.define(root, handler: splashHandler);
     router.define(app, handler: appHandle);
     router.define(browser, handler: browserHandle);
+    router.define(webview, handler: webviewHandle);
     router.define(share, handler: shareHandle);
     router.define(imagePicker, handler: imagePickerHandle);
     router.define(video, handler: videoHandle);

@@ -29,6 +29,7 @@ dependencies:
   path_provider: ^2.0.1
   fluro: ^2.0.3
   webview_flutter: ^2.0.2
+  flutter_inappwebview: ^5.1.0+4
   video_player: ^2.0.2
   auto_orientation: ^1.0.6
   screen: ^0.0.5
